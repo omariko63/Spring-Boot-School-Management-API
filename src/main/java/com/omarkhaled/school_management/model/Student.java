@@ -6,6 +6,9 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name ="students")
 public class Student {
@@ -26,10 +29,14 @@ public class Student {
     @Min(1) @Max(12)
     private Integer grade;
 
+    @ManyToMany(mappedBy = "students")
+    private List<Subject> subjects;
+
     public Student(String name, String email, Integer grade) {
         this.name = name;
         this.email = email;
         this.grade = grade;
+        subjects = new ArrayList<>();
     }
 
     public Student(){}
@@ -64,6 +71,35 @@ public class Student {
 
     public void setGrade(Integer grade) {
         this.grade = grade;
+    }
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
+    public void setSubjects(List<Subject> subjects) {
+        this.subjects = subjects;
+    }
+
+    public void addSubject(Subject subject){
+        if(!subjects.contains(subject)){
+            subjects.add(subject);
+            subject.addStudent(this);
+        }
+    }
+    protected void addSubjectInternal(Subject subject){
+        if(!subjects.contains(subject)){
+            subjects.add(subject);
+        }
+    }
+    public void removeSubject(Subject subject){
+        if(!subjects.contains(subject)){
+            throw new NullPointerException("Subject not found");
+        }
+        else{
+            subjects.remove(subject);
+        }
+    }
+    protected void removeSubjectInternal(Subject subject){
+        subjects.remove(subject);
     }
 
 }

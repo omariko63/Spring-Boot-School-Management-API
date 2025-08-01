@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "teachers")
 public class Teacher {
@@ -20,6 +23,9 @@ public class Teacher {
     @Email
     private String email;
 
+    @OneToMany(mappedBy = "teacher")
+    private List<Subject> subjects;
+
     public Integer getId() {
         return id;
     }
@@ -29,6 +35,7 @@ public class Teacher {
     public Teacher(String name, String email) {
         this.name = name;
         this.email = email;
+        this.subjects = new ArrayList<>();
     }
 
     public String getName() {
@@ -45,5 +52,19 @@ public class Teacher {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
+    public void setSubjects(List<Subject> subjects) {
+        this.subjects = subjects;
+    }
+    public void addSubject(Subject subject){
+        subjects.add(subject);
+        subject.setTeacher(this);
+    }
+    public void removeSubject(Subject subject){
+        subjects.remove(subject);
+        subject.setTeacher(null);
     }
 }
