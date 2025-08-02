@@ -40,4 +40,14 @@ public class SubjectController {
     public void deleteSubject(@PathVariable Integer id) {
         subjectService.deleteSubject(id);
     }
+
+    @PutMapping("/{subjectId}/students/{studentId}")
+    public SubjectDTO assignStudentToSubject(@PathVariable Integer subjectId, @PathVariable Integer studentId) {
+        return subjectService.assignStudentToSubject(subjectId, studentId);
+    }
+
+    @PutMapping("/{subjectId}/teacher/{teacherId}")
+    public SubjectDTO assignTeacherToSubject(@PathVariable Integer subjectId, @PathVariable Integer teacherId) {
+        return subjectService.assignTeacherToSubject(subjectId, teacherId);
+    }
 }
