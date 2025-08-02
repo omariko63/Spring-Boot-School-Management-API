@@ -1,5 +1,7 @@
 package com.omarkhaled.school_management.service;
 
+import com.omarkhaled.school_management.dto.StudentDTO;
+import com.omarkhaled.school_management.mapper.StudentMapper;
 import com.omarkhaled.school_management.model.Student;
 import com.omarkhaled.school_management.repository.StudentRepository;
 import org.springframework.http.HttpStatus;
@@ -17,27 +19,33 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+    public List<StudentDTO> getAllStudents() {
+        return studentRepository.findAll()
+                .stream()
+                .map(StudentMapper::toDTO)
+                .toList();
     }
 
-    public Student getStudentById(Integer id) {
-        return studentRepository.findById(id)
+    public StudentDTO getStudentById(Integer id) {
+        Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found"));
+        return StudentMapper.toDTO(student);
     }
 
-    public Student createStudent(Student student) {
-        return studentRepository.save(student);
+    public StudentDTO createStudent(StudentDTO studentDTO) {
+        Student student = StudentMapper.toEntity(studentDTO);
+        return StudentMapper.toDTO(studentRepository.save(student));
     }
 
-    public Student updateStudent(Integer id, Student updatedStudent) {
-        Student student = getStudentById(id);
+    public StudentDTO updateStudent(Integer id, StudentDTO updatedStudentDTO) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student not found"));
 
-        if (updatedStudent.getName() != null) student.setName(updatedStudent.getName());
-        if (updatedStudent.getEmail() != null) student.setEmail(updatedStudent.getEmail());
-        if (updatedStudent.getGrade() != null) student.setGrade(updatedStudent.getGrade());
+        if (updatedStudentDTO.name() != null) student.setName(updatedStudentDTO.name());
+        if (updatedStudentDTO.email() != null) student.setEmail(updatedStudentDTO.email());
+        if (updatedStudentDTO.grade() != null) student.setGrade(updatedStudentDTO.grade());
 
-        return studentRepository.save(student);
+        return StudentMapper.toDTO(studentRepository.save(student));
     }
 
     public void deleteStudent(Integer id) {

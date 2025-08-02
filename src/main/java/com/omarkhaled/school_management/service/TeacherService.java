@@ -1,5 +1,7 @@
 package com.omarkhaled.school_management.service;
 
+import com.omarkhaled.school_management.dto.TeacherDTO;
+import com.omarkhaled.school_management.mapper.TeacherMapper;
 import com.omarkhaled.school_management.model.Teacher;
 import com.omarkhaled.school_management.repository.TeacherRepository;
 import org.springframework.http.HttpStatus;
@@ -17,26 +19,32 @@ public class TeacherService {
         this.teacherRepository = teacherRepository;
     }
 
-    public List<Teacher> getAllTeachers() {
-        return teacherRepository.findAll();
+    public List<TeacherDTO> getAllTeachers() {
+        return teacherRepository.findAll()
+                .stream()
+                .map(TeacherMapper::toDTO)
+                .toList();
     }
 
-    public Teacher getTeacherById(Integer id) {
-        return teacherRepository.findById(id)
+    public TeacherDTO getTeacherById(Integer id) {
+        Teacher teacher = teacherRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher not found"));
+        return TeacherMapper.toDTO(teacher);
     }
 
-    public Teacher createTeacher(Teacher teacher) {
-        return teacherRepository.save(teacher);
+    public TeacherDTO createTeacher(TeacherDTO teacherDTO) {
+        Teacher teacher = TeacherMapper.toEntity(teacherDTO);
+        return TeacherMapper.toDTO(teacherRepository.save(teacher));
     }
 
-    public Teacher updateTeacher(Integer id, Teacher updatedTeacher) {
-        Teacher teacher = getTeacherById(id);
+    public TeacherDTO updateTeacher(Integer id, TeacherDTO updatedTeacher) {
+        Teacher teacher = teacherRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher not found"));
 
-        if (updatedTeacher.getName() != null) teacher.setName(updatedTeacher.getName());
-        if (updatedTeacher.getEmail() != null) teacher.setEmail(updatedTeacher.getEmail());
+        if (updatedTeacher.name() != null) teacher.setName(updatedTeacher.name());
+        if (updatedTeacher.email() != null) teacher.setEmail(updatedTeacher.email());
 
-        return teacherRepository.save(teacher);
+        return TeacherMapper.toDTO(teacherRepository.save(teacher));
     }
 
     public void deleteTeacher(Integer id) {

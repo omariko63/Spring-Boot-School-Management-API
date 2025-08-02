@@ -1,6 +1,6 @@
 package com.omarkhaled.school_management.controller;
 
-import com.omarkhaled.school_management.model.Student;
+import com.omarkhaled.school_management.dto.StudentDTO;
 import com.omarkhaled.school_management.service.StudentService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,22 +17,22 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<Student> getStudents() {
+    public List<StudentDTO> getStudents() {
         return studentService.getAllStudents();
     }
 
     @GetMapping("/{id}")
-    public Student getStudent(@PathVariable Integer id) {
+    public StudentDTO getStudent(@PathVariable Integer id) {
         return studentService.getStudentById(id);
     }
 
     @PostMapping
-    public Student addStudent(@RequestBody Student student) {
-        return studentService.createStudent(student);
+    public StudentDTO addStudent(@RequestBody StudentDTO studentDTO) {
+        return studentService.createStudent(studentDTO);
     }
 
     @PutMapping("/{id}")
-    public Student updateStudent(@PathVariable Integer id, @RequestBody Student updatedStudent) {
+    public StudentDTO updateStudent(@PathVariable Integer id, @RequestBody StudentDTO updatedStudent) {
         return studentService.updateStudent(id, updatedStudent);
     }
 

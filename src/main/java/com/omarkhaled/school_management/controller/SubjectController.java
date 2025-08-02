@@ -1,6 +1,6 @@
 package com.omarkhaled.school_management.controller;
 
-import com.omarkhaled.school_management.model.Subject;
+import com.omarkhaled.school_management.dto.SubjectDTO;
 import com.omarkhaled.school_management.service.SubjectService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,28 +17,27 @@ public class SubjectController {
     }
 
     @GetMapping
-    public List<Subject> getAllSubjects() {
+    public List<SubjectDTO> getAllSubjects() {
         return subjectService.getAllSubjects();
     }
 
     @GetMapping("/{id}")
-    public Subject getSubject(@PathVariable Integer id) {
+    public SubjectDTO getSubject(@PathVariable Integer id) {
         return subjectService.getSubjectById(id);
     }
 
     @PostMapping
-    public Subject addSubject(@RequestBody Subject subject) {
-        return subjectService.createSubject(subject);
+    public SubjectDTO addSubject(@RequestBody SubjectDTO subjectDTO) {
+        return subjectService.createSubject(subjectDTO);
     }
 
     @PutMapping("/{id}")
-    public Subject updateSubject(@PathVariable Integer id, @RequestBody Subject updatedSubject) {
+    public SubjectDTO updateSubject(@PathVariable Integer id, @RequestBody SubjectDTO updatedSubject) {
         return subjectService.updateSubject(id, updatedSubject);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteSubject(@PathVariable Integer id) {
+    public void deleteSubject(@PathVariable Integer id) {
         subjectService.deleteSubject(id);
-        return "Deleted subject with id: " + id;
     }
 }

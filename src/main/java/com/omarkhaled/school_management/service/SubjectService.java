@@ -1,5 +1,7 @@
 package com.omarkhaled.school_management.service;
 
+import com.omarkhaled.school_management.dto.SubjectDTO;
+import com.omarkhaled.school_management.mapper.SubjectMapper;
 import com.omarkhaled.school_management.model.Subject;
 import com.omarkhaled.school_management.repository.SubjectRepository;
 import org.springframework.http.HttpStatus;
@@ -17,27 +19,32 @@ public class SubjectService {
         this.subjectRepository = subjectRepository;
     }
 
-    public List<Subject> getAllSubjects() {
-        return subjectRepository.findAll();
+    public List<SubjectDTO> getAllSubjects() {
+        return subjectRepository.findAll()
+                .stream()
+                .map(SubjectMapper::toDTO)
+                .toList();
     }
 
-    public Subject getSubjectById(Integer id) {
-        return subjectRepository.findById(id)
+    public SubjectDTO getSubjectById(Integer id) {
+        Subject subject = subjectRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Subject not found"));
+        return SubjectMapper.toDTO(subject);
     }
 
-    public Subject createSubject(Subject subject) {
-        return subjectRepository.save(subject);
+    public SubjectDTO createSubject(SubjectDTO subjectDTO) {
+        Subject subject = SubjectMapper.toEntity(subjectDTO);
+        return SubjectMapper.toDTO(subjectRepository.save(subject));
     }
 
-    public Subject updateSubject(Integer id, Subject updatedSubject) {
-        Subject subject = getSubjectById(id);
+    public SubjectDTO updateSubject(Integer id, SubjectDTO updatedSubject) {
+        Subject subject = subjectRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Subject not found"));
 
-        if (updatedSubject.getName() != null) subject.setName(updatedSubject.getName());
-        if (updatedSubject.getDescription() != null) subject.setDescription(updatedSubject.getDescription());
-        if (updatedSubject.getCapacity() != null) subject.setCapacity(updatedSubject.getCapacity());
+        if (updatedSubject.name() != null) subject.setName(updatedSubject.name());
+        if (updatedSubject.description() != null) subject.setDescription(updatedSubject.description());
 
-        return subjectRepository.save(subject);
+        return SubjectMapper.toDTO(subjectRepository.save(subject));
     }
 
     public void deleteSubject(Integer id) {
