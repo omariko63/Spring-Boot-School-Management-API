@@ -26,7 +26,8 @@ public class SubjectMapper {
                 subject.getName(),
                 subject.getDescription(),
                 studentDTOs,
-                teacherDTO
+                teacherDTO,
+                subject.getCapacity()
         );
     }
 
@@ -39,6 +40,7 @@ public class SubjectMapper {
         subject.setId(dto.id());
         subject.setName(dto.name());
         subject.setDescription(dto.description());
+        subject.setCapacity(dto.capacity());
         return subject;
     }
 }
