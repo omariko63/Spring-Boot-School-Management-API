@@ -17,7 +17,7 @@ public class Student {
     private Integer id;
 
     @Column(nullable = false)
-    @NotBlank
+    @NotBlank(message ="")
     private String name;
 
     @Column(nullable = false)
